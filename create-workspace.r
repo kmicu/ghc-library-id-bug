@@ -25,5 +25,10 @@ builds <- foreach(file = inputfiles, .combine=rbind, .multicombine=TRUE, .inorde
 builds <- within(builds, {
     out <- sub("^/nix/store/([a-z0-9]+)-ghc-(.*)$", "\\1", storepath)
     ghc <- sub("^/nix/store/([a-z0-9]+)-ghc-(.*)$", "\\2", storepath)
+    ghc <- factor(ghc, levels=ordered(unique(ghc)))
     storepath <- NULL
+    system <- factor(system, levels=ordered(unique(system)))
+    package.name <- factor(package.name, levels=ordered(unique(package.name)))
+    package.hash <- factor(package.hash, levels=ordered(unique(package.hash)))
+    machine <- factor(machine, levels=ordered(unique(machine)))
 })
