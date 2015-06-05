@@ -32,13 +32,13 @@ stdenv.mkDerivation {
 
   name = "haskell-library-id-challenge-${hostname}-0";
 
-  phases = ["installPhase"];
-
-  installPhase = ''
-    mkdir -p $out
-    pkg=$(basename ${haskell.packages.${compiler}.${pkg}})
-    fout="$out/${system}-${compiler}-$pkg-${hostname}-id.csv"
-    echo >$fout 'storepath,iteration,libraryid'
-  '' + lib.concatStringsSep "\n" (map builder (lib.range 1 iterations));
+  builder = writeScript "collect-ids" (''
+              #! ${stdenv.shell}
+              export PATH=${coreutils}/bin
+              mkdir -p $out
+              pkg=$(basename ${haskell.packages.${compiler}.${pkg}})
+              fout="$out/${system}-${compiler}-$pkg-${hostname}-id.csv"
+              echo >$fout 'storepath,iteration,libraryid'
+            '' + lib.concatStringsSep "\n" (map builder (lib.range 1 iterations)));
 
 }
